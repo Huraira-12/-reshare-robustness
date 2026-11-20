@@ -1,6 +1,6 @@
-# Re-share robustness: can we still find the original image?
+﻿# Re-share robustness: can we still find the original image?
 
-During the May 2025 India–Pakistan crisis, many viral "strike" videos turned out to be
+During the May 2025 Indiaâ€“Pakistan crisis, many viral "strike" videos turned out to be
 **real footage from other events** (e.g. a 2024 clip of Iranian missiles over Israel,
 a 2015 explosion in Yemen), re-shared with new captions. Fact-checkers traced them
 largely by hand.
@@ -8,7 +8,7 @@ largely by hand.
 This project asks a narrow, measurable version of that problem:
 
 > After an image is compressed, resized, cropped, flipped or re-framed with a caption,
-> how reliably can different methods retrieve the original from a gallery — and where do they fail?
+> how reliably can different methods retrieve the original from a gallery â€” and where do they fail?
 
 **Status: work in progress** (started November 2026).
 
@@ -16,7 +16,7 @@ This project asks a narrow, measurable version of that problem:
 
 | | |
 |---|---|
-| Images | COCO val2017 — 500 originals + 2,000 distractors (fixed seed) |
+| Images | COCO val2017 â€” 500 originals + 2,000 distractors (fixed seed) |
 | Queries | each original under 20 attack levels (`src/transforms.py`) |
 | Methods | pHash (64-bit DCT hash), CLIP ViT-B/32 (OpenAI), DINOv2 ViT-S/14 |
 | Metric | Recall@1 / Recall@5 / mAP, pessimistic tie-breaking (`src/evaluate.py`) |
@@ -29,10 +29,10 @@ low DCT frequencies) but fail on any change to global layout (crop, flip, captio
 | Attack | pHash | CLIP | DINOv2 |
 |---|---|---|---|
 | JPEG q10 | 1.000 | 0.984 | 1.000 |
-| Downscale ×0.1 | 1.000 | 0.768 | 0.966 |
+| Downscale Ã—0.1 | 1.000 | 0.768 | 0.966 |
 | Centre crop, keep 30% area | 0.004 | 0.942 | 0.978 |
 | Horizontal flip | 0.000 | 0.998 | 1.000 |
-| Caption bar ("BREAKING: …") | 0.242 | 0.914 | 0.998 |
+| Caption bar ("BREAKING: â€¦") | 0.242 | 0.914 | 0.998 |
 | Re-share chain, 5 hops | 0.240 | 0.870 | 0.998 |
 
 Full table: `results/results.csv`. Figures: `results/fig_degradation.png`, `results/fig_single.png`.
@@ -52,7 +52,7 @@ Full table: `results/results.csv`. Figures: `results/fig_degradation.png`, `resu
 
 ## Real WhatsApp re-uploads
 
-20 of the originals were sent through WhatsApp three times (Android/iOS phone app,
+20 of the originals were sent through WhatsApp three times (iPhone / iOS app,
 "Message yourself", photo upload quality **Standard**). Each hop was a **re-upload**
 (received photo saved, then attached again as a new photo), not the Forward button.
 Renamed files were matched back to originals with DINOv2 + one-to-one assignment;
@@ -61,23 +61,23 @@ Code: `src/whatsapp_eval.py`.
 
 | Hop | Resolution | File size | Est. JPEG quality | PSNR vs original | R@1 pHash / CLIP / DINOv2 |
 |---|---|---|---|---|---|
-| 0 (original) | unchanged | 152 KB | ~95 | — | 1.00 / 1.00 / 1.00 |
+| 0 (original) | unchanged | 152 KB | ~95 | â€” | 1.00 / 1.00 / 1.00 |
 | 1 | unchanged | 57 KB | ~85 | 33.6 dB | 1.00 / 1.00 / 1.00 |
 | 2 | unchanged | 55 KB | ~85 | 33.0 dB | 1.00 / 1.00 / 1.00 |
 | 3 | unchanged | 54 KB | ~85 | 32.9 dB | 1.00 / 1.00 / 1.00 |
 
-- The **first** upload does almost all the damage (file size −63%, quality ~95 → ~85);
+- The **first** upload does almost all the damage (file size âˆ’63%, quality ~95 â†’ ~85);
   later re-uploads change little (PSNR falls only 0.7 dB over two more hops).
 - Platform compression alone did **not** break retrieval for any method. Combined with the
   simulated results, this suggests that what makes re-shared images hard to trace is
   **human editing (cropping, captioning, re-framing)** rather than repeated platform compression.
-- Caveats: only 20 images, one device, Standard quality. COCO images are ≤640 px, so
+- Caveats: only 20 images, one device, Standard quality. COCO images are â‰¤640 px, so
   WhatsApp did not downscale them; full-resolution phone photos would be resized, which this
   test does not cover.
 
 ## Limitations
-- **The gallery is easy.** Distractors are unrelated everyday photos. The realistic hard case —
-  telling apart two *different* clips of visually similar events — is not yet tested.
+- **The gallery is easy.** Distractors are unrelated everyday photos. The realistic hard case â€”
+  telling apart two *different* clips of visually similar events â€” is not yet tested.
 - Attacks are **simulated**; real platform processing (e.g. WhatsApp) may differ.
 - CLIP and DINOv2 preprocessing centre-crops to 224 px, so image edges are never seen;
   this may favour them on some attacks.
@@ -100,6 +100,6 @@ python src/plots.py
 ```
 
 ## Related work
-- INRIA Copydays — copy-detection benchmark with JPEG/crop/"strong" attacks (Jégou et al.)
+- INRIA Copydays â€” copy-detection benchmark with JPEG/crop/"strong" attacks (JÃ©gou et al.)
 - Image Similarity Challenge / DISC21 (Douze et al., 2021) and SSCD (Pizzi et al., CVPR 2022),
   which train descriptors specifically for copy detection.

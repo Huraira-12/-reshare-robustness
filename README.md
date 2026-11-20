@@ -50,6 +50,31 @@ Full table: `results/results.csv`. Figures: `results/fig_degradation.png`, `resu
    One hypothesis is that CLIP's text-aligned training makes it sensitive to the caption's
    words; this has not been tested yet.
 
+## Real WhatsApp re-uploads
+
+20 of the originals were sent through WhatsApp three times (Android/iOS phone app,
+"Message yourself", photo upload quality **Standard**). Each hop was a **re-upload**
+(received photo saved, then attached again as a new photo), not the Forward button.
+Renamed files were matched back to originals with DINOv2 + one-to-one assignment;
+pHash agreed on 60/60 matches (`results/whatsapp_contact_sheet.jpg`).
+Code: `src/whatsapp_eval.py`.
+
+| Hop | Resolution | File size | Est. JPEG quality | PSNR vs original | R@1 pHash / CLIP / DINOv2 |
+|---|---|---|---|---|---|
+| 0 (original) | unchanged | 152 KB | ~95 | — | 1.00 / 1.00 / 1.00 |
+| 1 | unchanged | 57 KB | ~85 | 33.6 dB | 1.00 / 1.00 / 1.00 |
+| 2 | unchanged | 55 KB | ~85 | 33.0 dB | 1.00 / 1.00 / 1.00 |
+| 3 | unchanged | 54 KB | ~85 | 32.9 dB | 1.00 / 1.00 / 1.00 |
+
+- The **first** upload does almost all the damage (file size −63%, quality ~95 → ~85);
+  later re-uploads change little (PSNR falls only 0.7 dB over two more hops).
+- Platform compression alone did **not** break retrieval for any method. Combined with the
+  simulated results, this suggests that what makes re-shared images hard to trace is
+  **human editing (cropping, captioning, re-framing)** rather than repeated platform compression.
+- Caveats: only 20 images, one device, Standard quality. COCO images are ≤640 px, so
+  WhatsApp did not downscale them; full-resolution phone photos would be resized, which this
+  test does not cover.
+
 ## Limitations
 - **The gallery is easy.** Distractors are unrelated everyday photos. The realistic hard case —
   telling apart two *different* clips of visually similar events — is not yet tested.
@@ -59,7 +84,8 @@ Full table: `results/results.csv`. Figures: `results/fig_degradation.png`, `resu
 - Single seed, single dataset, still images only (no video).
 
 ## Next steps
-- [ ] Real WhatsApp re-share chain vs simulated chain
+- [x] Real WhatsApp re-share chain vs simulated chain
+- [ ] WhatsApp test with full-resolution photos (to trigger platform downscaling)
 - [ ] Hard near-duplicate distractors
 - [ ] Explanation stability: do occlusion heatmaps stay the same after JPEG compression?
 - [ ] Qualitative case study on publicly fact-checked frames
